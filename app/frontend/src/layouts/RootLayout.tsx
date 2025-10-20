@@ -128,7 +128,7 @@ const RootLayout: FC<RootLayoutProps> = () => {
   return (
     <NeonShell>
       <Header currentUser={null} />
-      <main className="w-full h-full">
+      <main className="w-full h-full flex-1 flex flex-col">
         <Outlet />
       </main>
     </NeonShell>

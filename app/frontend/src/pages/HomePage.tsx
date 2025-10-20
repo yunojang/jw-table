@@ -3,12 +3,12 @@ import Button from "@/components/UI/Button";
 import type { Comment, DB, ID, Post, User } from "@/types";
 import { now, sampleText, timeAgo, uid } from "@/utils";
 import { Avatar } from "@/components/UI/Avatar";
-import { Input } from "@/components/UI/Input";
 import { Badge } from "@/components/UI/Badge";
 import { TextArea } from "@/components/UI/TextArea";
 import Footer from "@/layouts/Footer";
 import PostList from "@/components/PostList";
 import Container from "@/layouts/Container";
+import PostCreate from "@/components/PostCreate";
 
 // ────────────────────────────────────────────────────────────────────────────────
 // Anime Otaku Community — NEON ARCADE Prototype (React + TypeScript + Tailwind)
@@ -348,59 +348,6 @@ function PostRead({
 }
 
 // ========== Feature: Post Create ==========
-function PostCreate({
-  onSubmit,
-  onCancel,
-}: {
-  onSubmit: (title: string, body: string, tags: string[]) => void;
-  onCancel: () => void;
-}) {
-  const [title, setTitle] = useState("");
-  const [tags, setTags] = useState("");
-  const [body, setBody] = useState("");
-
-  return (
-    <div className="neon-card rounded-2xl p-6 py-12 max-w-5xl mx-auto">
-      <h1 className="text-xl font-extrabold">새 글 작성</h1>
-      <div className="mt-4 space-y-3">
-        <Input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="제목"
-        />
-        <Input
-          value={tags}
-          onChange={(e) => setTags(e.target.value)}
-          placeholder="태그(쉼표로 구분: 예) 신작, 스포주의)"
-        />
-        <TextArea
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          placeholder="본문을 입력하세요"
-        />
-      </div>
-      <div className="mt-4 flex items-center justify-end gap-2">
-        <Button variant="flat" onClick={onCancel}>
-          취소
-        </Button>
-        <Button
-          onClick={() =>
-            onSubmit(
-              title.trim(),
-              body.trim(),
-              tags
-                .split(",")
-                .map((s) => s.trim())
-                .filter(Boolean)
-            )
-          }
-        >
-          등록
-        </Button>
-      </div>
-    </div>
-  );
-}
 
 // ========== Feature: Auth (Login/Signup) ==========
 
@@ -434,11 +381,6 @@ export default function NeonArcadeBoardApp() {
 
   return (
     <>
-      {/* <Header
-        route={route}
-        setRoute={setRoute}
-        currentUser={state.currentUser}
-      /> */}
       <Container>
         {route.name === "list" && (
           <PostList
@@ -469,14 +411,14 @@ export default function NeonArcadeBoardApp() {
               onCancel={() => setRoute({ name: "list", page: 1 })}
             />
           )}
-
-        <Footer
-          currentUser={state.currentUser}
-          onLogout={() => {
-            dispatch({ type: "logout" });
-          }}
-        />
       </Container>
+
+      <Footer
+        currentUser={state.currentUser}
+        onLogout={() => {
+          dispatch({ type: "logout" });
+        }}
+      />
     </>
   );
 }

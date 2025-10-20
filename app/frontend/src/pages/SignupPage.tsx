@@ -1,21 +1,28 @@
+import type { FC } from "react";
+
 import Signup from "@/components/Singnup";
 import Container from "@/layouts/Container";
-import type { FC } from "react";
+import { signup, type SignupPayload } from "@/services/auth";
+import { useNavigate } from "react-router-dom";
 
 interface SignupPageProps {}
 
 const SignupPage: FC<SignupPageProps> = () => {
+  const navigate = useNavigate();
+
+  const handleSignup = async (values: SignupPayload) => {
+    try {
+      await signup(values);
+      navigate("/");
+    } catch (error) {
+      // 에러 핸들링
+      throw Error(`Error: ${error}`);
+    }
+  };
+
   return (
     <Container>
-      <div className="w-1/3 mx-auto">
-        <Signup
-          onSignup={() => {
-            // if (!username) return;
-            // dispatch({ type: "signup", username, nickname });
-            // setRoute({ name: "list", page: 1 });
-          }}
-        />
-      </div>
+      <Signup onSignup={handleSignup} />
     </Container>
   );
 };

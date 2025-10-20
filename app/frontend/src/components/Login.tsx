@@ -19,7 +19,7 @@ function Login({
         <Input
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="아이디"
+          placeholder="이메일"
         />
         <Input
           value={password}
@@ -27,7 +27,7 @@ function Login({
           placeholder="패스워드"
         />
       </div>
-      <div className="mt-4 flex items-center justify-between">
+      <div className="mt-4 flex items-center justify-end gap-2">
         <Button onClick={() => onLogin(username.trim())}>로그인</Button>
         <Button variant="flat" onClick={gotoSignup}>
           회원가입
