@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from typing import Annotated
 from pydantic import BaseModel
 
-from api.main import api_router
+from .api.main import api_router
 
 app = FastAPI()
 
