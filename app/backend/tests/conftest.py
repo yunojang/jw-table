@@ -4,6 +4,28 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.backend.main import app
 from app.backend.config.database import MONGO_DETAILS
+from app.backend.api.deps import get_db
+
+
+@pytest_asyncio.fixture
+async def test_db():
+    client = AsyncIOMotorClient(MONGO_DETAILS)
+    db = client["mytable_test"]
+
+    async def override_get_db():
+        yield db
+
+    app.dependency_overrides[get_db] = override_get_db
+
+    await db.drop_collection("items")
+    await db.drop_collection("posts")
+    try:
+        yield db
+    finally:
+        await db.drop_collection("items")
+        await db.drop_collection("posts")
+        app.dependency_overrides.pop(get_db, None)
+        client.close()
 
 
 @pytest_asyncio.fixture
