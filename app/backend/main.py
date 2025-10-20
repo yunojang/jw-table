@@ -8,8 +8,21 @@ from typing import Annotated
 from pydantic import BaseModel
 
 from .api.main import api_router
+from fastapi.middleware.cors import CORSMiddleware
+import os
+
+# CORS_ORIGINS = os.getenv("CORS_ORIGINS", "").split(",")
+# CORS_ORIGINS = [origin.strip() for origin in CORS_ORIGINS if origin.strip()]
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5174"],  # 기본값
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(api_router)
 
