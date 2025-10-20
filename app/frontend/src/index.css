@@ -4,6 +4,7 @@ button {
   user-select: none;
   outline: none;
   box-shadow: none;
+  cursor: pointer;
 }
 
 input {
