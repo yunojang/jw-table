@@ -1,5 +1,6 @@
 from datetime import timedelta
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from app.backend.core import security
 from app.backend.config import settings
 
@@ -19,8 +20,16 @@ async def login_access_token(db: DbDep, credentials: models.LoginCredentials):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
 
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    return models.Token(
-        access_token=security.create_access_token(
-            user["id"], expires_delta=access_token_expires
-        )
+    token = security.create_access_token(user["id"], expires_delta=access_token_expires)
+
+    response = JSONResponse(content={"access_token": token, "token_type": "bearer"})
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        secure=True,
+        samesite=None,
+        max_age=int(access_token_expires.total_seconds()),
     )
+
+    return response

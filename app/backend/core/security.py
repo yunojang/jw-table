@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta, timezone
 from typing import Any
 from app.backend.config import settings
+from fastapi import HTTPException
 
+from jwt import PyJWTError
 import jwt
 from passlib.context import CryptContext
 
@@ -24,3 +26,10 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 # plain pwd -> hash
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
+
+
+def decode_access_token(token: str) -> dict:
+    try:
+        return jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
+    except PyJWTError as exc:
+        raise HTTPException(status_code=401, detail="Invalid token") from exc
