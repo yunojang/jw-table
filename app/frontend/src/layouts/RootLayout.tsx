@@ -85,6 +85,7 @@ animation: glitch-btm 1.6s steps(2, end) infinite, glitch-flicker 3.2s linear in
 }
 
 function Header({ currentUser }: { currentUser: PublicUser | null }) {
+  const { isAuthenticated } = useAuth();
   return (
     <header className="sticky top-0 z-20 backdrop-blur bg-black/40 border-b border-pink-500/20">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
@@ -99,9 +100,11 @@ function Header({ currentUser }: { currentUser: PublicUser | null }) {
           <Link to={"/posts"}>
             <Button variant="ghost">게시판</Button>
           </Link>
-          <Link to={"/posts/write"}>
-            <Button variant="ghost">글쓰기</Button>
-          </Link>
+          {isAuthenticated && (
+            <Link to={"/posts/write"}>
+              <Button variant="ghost">글쓰기</Button>
+            </Link>
+          )}
         </nav>
         <div className="ml-auto flex items-center gap-2 pr-3">
           {currentUser ? (

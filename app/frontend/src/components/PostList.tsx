@@ -47,7 +47,7 @@ function PostList({ posts, onSelectPost }: PostListProps) {
         {posts.map((post) => (
           <article
             key={post.id}
-            className="neon-card rounded-2xl p-5 transition duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-lg/60"
+            className="neon-card rounded-2xl p-5 transition duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-lg/60 h-[200px]"
             onClick={() => handleSelect(post.id)}
           >
             <div className="flex flex-col gap-4 h-full">

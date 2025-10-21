@@ -12,6 +12,7 @@ import { AuthProvider } from "./provider/AuthProvider";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import PostCreatePage from "./pages/PostCreatePage";
+import ProtectedRoute from "./components/ProtectedRouter";
 
 const router = createBrowserRouter([
   {
@@ -21,7 +22,14 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "posts", element: <PostsPage /> },
-      { path: "posts/write", element: <PostCreatePage /> },
+      {
+        path: "posts/write",
+        element: (
+          <ProtectedRoute>
+            <PostCreatePage />
+          </ProtectedRoute>
+        ),
+      },
       { path: "posts/:postId", element: <PostDetailPage /> },
       {
         path: "login",

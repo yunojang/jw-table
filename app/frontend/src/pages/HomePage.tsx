@@ -5,6 +5,7 @@ import Container from "@/layouts/Container";
 import Button from "@/components/UI/Button";
 import PostList from "@/components/PostList";
 import { usePosts } from "@/hooks/usePosts";
+import { useAuth } from "@/hooks/useAuth";
 
 const HomePage: FC = () => {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ const HomePage: FC = () => {
     () => (Array.isArray(posts) ? posts.slice(0, 6) : []),
     [posts]
   );
+
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="py-12">
@@ -29,9 +32,11 @@ const HomePage: FC = () => {
           </p> */}
           <div className="flex justify-center gap-3 mt-4">
             <Button onClick={() => navigate("/posts")}>게시판 전체보기</Button>
-            <Button variant="flat" onClick={() => navigate("/posts/write")}>
-              글쓰기
-            </Button>
+            {isAuthenticated && (
+              <Button variant="flat" onClick={() => navigate("/posts/write")}>
+                글쓰기
+              </Button>
+            )}
           </div>
         </section>
 
