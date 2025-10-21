@@ -1,5 +1,25 @@
 import uuid
-from pydantic import BaseModel, EmailStr
+from datetime import datetime
+from pydantic import BaseModel, EmailStr, Field
+
+
+# JSON payload containing access toklen
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
+class UserBase(BaseModel):
+    email: EmailStr
+    nickname: str
+
+
+class PublicUser(UserBase):
+    id: uuid.UUID
+
+
+class UserCreate(UserBase):
+    password: str
 
 
 class ItemBase(BaseModel):
@@ -30,13 +50,20 @@ class ItemsPublic(BaseModel):
 class PostBase(BaseModel):
     title: str
     content: str | None = None
-    like: int
-    avaliable: bool = True
+    excerpt: str | None = None
+    tags: list[str] = Field(default_factory=list)
 
 
-class PostPublic(ItemBase):
+class PostCreate(PostBase):
+    pass
+
+
+class PostPublic(PostBase):
     id: uuid.UUID
-    # own_id: uuid.UUID
+    likes: int = 0
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    author: "PublicUser"
+    excerpt: str
 
 
 class PostsPublic(BaseModel):
@@ -44,30 +71,7 @@ class PostsPublic(BaseModel):
     count: int
 
 
-class PostCreate(PostBase):
-    pass
-
-
 # Auth...
 class LoginCredentials(BaseModel):
     email: EmailStr
-    password: str
-
-
-# JSON payload containing access toklen
-class Token(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
-
-
-class UserBase(BaseModel):
-    email: EmailStr
-    nickname: str
-
-
-class PublicUser(UserBase):
-    id: uuid.UUID
-
-
-class UserCreate(UserBase):
     password: str

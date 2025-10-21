@@ -32,7 +32,7 @@ async def login_access_token(db: DbDep, credentials: models.LoginCredentials):
         key="access_token",
         value=token,
         httponly=True,
-        secure=True,
+        secure=False,
         samesite=None,
         max_age=int(access_token_expires.total_seconds()),
     )

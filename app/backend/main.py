@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from typing import Annotated
 from pydantic import BaseModel
 
-from .api.main import api_router
+from app.backend.api.main import api_router
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
@@ -18,7 +18,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5174"],  # 기본값
+    allow_origins=["http://localhost:5173"],  # 기본값
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

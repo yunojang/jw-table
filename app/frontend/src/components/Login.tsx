@@ -16,7 +16,7 @@ function Login({
   });
 
   return (
-    <div className="max-w-sm neon-card rounded-2xl p-6">
+    <div className="max-w-md neon-card rounded-2xl p-6">
       <h1 className="text-xl font-extrabold">로그인</h1>
       <div className="mt-4 space-y-3">
         <Input

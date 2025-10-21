@@ -3,14 +3,15 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import RootLayout from "./layouts/RootLayout";
 import HomePage from "./pages/HomePage";
-import PostsPage from "./pages/PostsPage.tsx";
-import PostDetailPage from "./pages/PostDetailPage.tsx";
+import PostsPage from "./pages/PostsPage";
+import PostDetailPage from "./pages/PostDetailPage";
 import NotFound from "./pages/NotFound";
 import AppProvider from "./provider/App";
-import { AuthProvider } from "./provider/AuthProvider.tsx";
+import { AuthProvider } from "./provider/AuthProvider";
 
-import LoginPage from "./pages/LoginPage.tsx";
-import SignupPage from "./pages/SignupPage.tsx";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import PostCreatePage from "./pages/PostCreatePage";
 
 const router = createBrowserRouter([
   {
@@ -19,16 +20,9 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       { index: true, element: <HomePage /> },
-      {
-        path: "posts",
-        element: <PostsPage />,
-        children: [
-          {
-            path: ":postId",
-            element: <PostDetailPage />,
-          },
-        ],
-      },
+      { path: "posts", element: <PostsPage /> },
+      { path: "posts/write", element: <PostCreatePage /> },
+      { path: "posts/:postId", element: <PostDetailPage /> },
       {
         path: "login",
         element: <LoginPage />,

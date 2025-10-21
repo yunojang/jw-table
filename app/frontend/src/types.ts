@@ -1,30 +1,39 @@
-// ========== Types ==========
 export type ID = string;
 
-export type Comment = {
+export interface UserSummary {
   id: ID;
-  postId: ID;
-  authorId: ID;
-  body: string;
-  createdAt: number;
-};
+  nickname: string;
+  avatarHue?: number;
+}
 
-export type Post = {
-  id: ID;
+export type User = UserSummary;
+
+export interface PostBase {
   title: string;
-  body: string;
-  tags: string[];
-  authorId: ID;
-  createdAt: number;
-  likes: number;
-};
+  content: string;
+}
 
-export type DB = {
-  users: Record<ID, null>;
-  posts: Record<ID, Post>;
-  comments: Record<ID, Comment>;
-  order: ID[]; // post order (newest first)
-};
+export interface PostPublic extends PostBase {
+  id: ID;
+  created_at: string;
+  likes: number;
+  author: UserSummary;
+  excerpt: string;
+}
+
+export interface PostCreatePayload extends PostBase {}
+
+export interface PostComment {
+  id: ID;
+  author: UserSummary;
+  body: string;
+  createdAt: string;
+}
+
+export interface PostDetail extends PostPublic {
+  body: string;
+  comments: PostComment[];
+}
 
 export interface LoginPayload {
   email: string;
