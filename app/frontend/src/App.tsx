@@ -7,6 +7,7 @@ import PostsPage from "./pages/PostsPage.tsx";
 import PostDetailPage from "./pages/PostDetailPage.tsx";
 import NotFound from "./pages/NotFound";
 import AppProvider from "./provider/App";
+import { AuthProvider } from "./provider/AuthProvider.tsx";
 
 import LoginPage from "./pages/LoginPage.tsx";
 import SignupPage from "./pages/SignupPage.tsx";
@@ -43,7 +44,9 @@ const router = createBrowserRouter([
 const APP: FC = () => {
   return (
     <AppProvider>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </AppProvider>
   );
 };

@@ -2,7 +2,10 @@ import type { FC } from "react";
 import { Link, Outlet } from "react-router-dom";
 import Button from "@/components/UI/Button";
 import { Avatar } from "@/components/UI/Avatar";
-import type { User } from "@/types";
+import { useAuth } from "@/hooks/useAuth";
+import type { PublicUser } from "@/types/user";
+import Footer from "./Footer";
+import { logout } from "@/services/auth";
 
 interface RootLayoutProps {}
 
@@ -81,7 +84,7 @@ animation: glitch-btm 1.6s steps(2, end) infinite, glitch-flicker 3.2s linear in
   );
 }
 
-function Header({ currentUser }: { currentUser: User | null }) {
+function Header({ currentUser }: { currentUser: PublicUser | null }) {
   return (
     <header className="sticky top-0 z-20 backdrop-blur bg-black/40 border-b border-pink-500/20">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
@@ -125,12 +128,20 @@ function Header({ currentUser }: { currentUser: User | null }) {
 }
 
 const RootLayout: FC<RootLayoutProps> = () => {
+  const { user, setUser } = useAuth();
   return (
     <NeonShell>
-      <Header currentUser={null} />
+      <Header currentUser={user} />
       <main className="w-full h-full flex-1 flex flex-col">
         <Outlet />
       </main>
+      <Footer
+        currentUser={user}
+        onLogout={async () => {
+          await logout();
+          setUser(null);
+        }}
+      />
     </NeonShell>
   );
 };

@@ -5,11 +5,14 @@ import Login from "@/components/Login";
 import Container from "@/layouts/Container";
 import type { LoginPayload } from "@/types";
 import { login } from "@/services/auth";
+import { useAuth } from "@/hooks/useAuth";
+import { fetchCurrentUser } from "@/services/users";
 
 interface LoginPageProps {}
 
 const LoginPage: FC<LoginPageProps> = () => {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
   const [error, setError] = useState<string | null>(null);
 
   return (
@@ -18,6 +21,7 @@ const LoginPage: FC<LoginPageProps> = () => {
         onLogin={async (v: LoginPayload) => {
           try {
             await login(v);
+            setUser(await fetchCurrentUser());
             navigate("/");
           } catch (err) {
             setError(String(err));

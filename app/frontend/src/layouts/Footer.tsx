@@ -1,11 +1,11 @@
 import Button from "@/components/UI/Button";
-import type { User } from "@/types";
+import type { PublicUser } from "@/types/user";
 
 function Footer({
   currentUser,
   onLogout,
 }: {
-  currentUser: User | null;
+  currentUser: PublicUser | null;
   onLogout: () => void;
 }) {
   return (

@@ -1,14 +1,6 @@
 // ========== Types ==========
 export type ID = string;
 
-export type User = {
-  id: ID;
-  username: string;
-  nickname: string;
-  avatarHue: number; // 0~360
-  createdAt: number;
-};
-
 export type Comment = {
   id: ID;
   postId: ID;
@@ -28,7 +20,7 @@ export type Post = {
 };
 
 export type DB = {
-  users: Record<ID, User>;
+  users: Record<ID, null>;
   posts: Record<ID, Post>;
   comments: Record<ID, Comment>;
   order: ID[]; // post order (newest first)

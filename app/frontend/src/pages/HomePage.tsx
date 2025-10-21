@@ -412,13 +412,6 @@ export default function NeonArcadeBoardApp() {
             />
           )}
       </Container>
-
-      <Footer
-        currentUser={state.currentUser}
-        onLogout={() => {
-          dispatch({ type: "logout" });
-        }}
-      />
     </>
   );
 }

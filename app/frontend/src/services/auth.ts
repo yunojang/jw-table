@@ -55,3 +55,14 @@ export async function signup(payload: SignupPayload) {
 
   return res.json();
 }
+
+export async function logout() {
+  const res = await fetch("http://localhost:8000/login/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+  if (!res.ok) {
+    await handleError(res, "로그아웃 실패");
+  }
+  return res.json();
+}
