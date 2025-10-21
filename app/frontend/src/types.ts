@@ -26,12 +26,11 @@ export interface PostCreatePayload extends PostBase {}
 export interface PostComment {
   id: ID;
   author: UserSummary;
-  body: string;
-  createdAt: string;
+  content: string;
+  created_at: string;
 }
 
 export interface PostDetail extends PostPublic {
-  body: string;
   comments: PostComment[];
 }
 

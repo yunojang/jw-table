@@ -120,7 +120,7 @@ async def create_comment(
         raise HTTPException(status_code=404, detail="Post not found")
 
     data = payload.model_dump()
-    now = datetime.utcnow()
+    now = datetime.now()
     comment_id = str(uuid.uuid4())
     document = {
         **data,

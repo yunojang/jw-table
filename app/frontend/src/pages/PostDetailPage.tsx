@@ -3,9 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import Container from "@/layouts/Container";
 import PostDetailView from "@/components/PostDetail";
-import type { PostDetail } from "@/types";
+import type { ID, PostDetail } from "@/types";
 import { fetchPostDetail } from "@/services/posts";
 import Button from "@/components/UI/Button";
+import { createComment } from "@/services/comment";
 
 const PostDetailPage: FC = () => {
   const { postId } = useParams<{ postId: string }>();
@@ -20,24 +21,20 @@ const PostDetailPage: FC = () => {
       setLoading(false);
       return;
     }
-    let ignore = false;
-    (async () => {
+    const load = async () => {
       try {
         const data = await fetchPostDetail(postId);
-        if (!ignore) setPost(data);
+        setPost(data);
       } catch (err) {
-        if (!ignore) {
-          setError(
-            err instanceof Error ? err.message : "게시글을 불러오지 못했습니다."
-          );
-        }
+        setError(
+          err instanceof Error ? err.message : "게시글을 불러오지 못했습니다."
+        );
       } finally {
-        if (!ignore) setLoading(false);
+        setLoading(false);
       }
-    })();
-    return () => {
-      ignore = true;
     };
+
+    load();
   }, [postId]);
 
   return (
@@ -57,7 +54,15 @@ const PostDetailPage: FC = () => {
           <div className="text-sm text-red-400 font-semibold">{error}</div>
         )}
         {!loading && !error && post && (
-          <PostDetailView post={post} onBack={() => navigate("/posts")} />
+          <PostDetailView
+            post={post}
+            onBack={() => navigate("/posts")}
+            onSubmitComment={async (pid: ID, content: string) => {
+              await createComment(pid, content);
+              const updated = await fetchPostDetail(pid);
+              setPost(updated);
+            }}
+          />
         )}
       </Container>
     </div>

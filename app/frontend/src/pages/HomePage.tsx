@@ -30,7 +30,7 @@ const HomePage: FC = () => {
             나눠보세요. 토론, 리뷰, 추천을 한 번에 즐길 수 있는 공간을
             준비했습니다.
           </p> */}
-          <div className="flex justify-center gap-3 mt-4">
+          <div className="flex justify-center gap-3 mt-4 ">
             <Button onClick={() => navigate("/posts")}>게시판 전체보기</Button>
             {isAuthenticated && (
               <Button variant="flat" onClick={() => navigate("/posts/write")}>

@@ -1,10 +1,8 @@
-import { useMemo, useState } from "react";
 import type { ID, PostDetail } from "@/types";
 import Button from "./UI/Button";
 import { Avatar } from "./UI/Avatar";
-import { Badge } from "./UI/Badge";
-import { TextArea } from "./UI/TextArea";
 import { timeAgo } from "@/utils";
+import CommentList from "./CommentList";
 
 interface PostDetailProps {
   post: PostDetail;
@@ -19,24 +17,6 @@ function PostDetailView({
   onSubmitComment,
   submitting = false,
 }: PostDetailProps) {
-  const [body, setBody] = useState("");
-
-  // const sortedComments = useMemo(
-  //   () =>
-  //     [...post.comments].sort(
-  //       (a, b) =>
-  //         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-  //     ),
-  //   [post.comments]
-  // );
-
-  const handleSubmit = async () => {
-    const trimmed = body.trim();
-    if (!trimmed || !onSubmitComment) return;
-    await onSubmitComment(post.id, trimmed);
-    setBody("");
-  };
-
   return (
     <article className="space-y-6">
       <div className="neon-card rounded-2xl p-6">
@@ -68,46 +48,12 @@ function PostDetailView({
         )}
       </div>
 
-      <section className="neon-card rounded-2xl p-6">
-        <h2 className="text-lg font-bold">댓글 {post.comments?.length ?? 0}</h2>
-        <div className="mt-4 space-y-4">
-          {post.comments?.map((comment) => (
-            <div
-              key={comment.id}
-              className="border-b border-pink-500/20 pb-4 last:border-none"
-            >
-              <div className="flex items-center justify-between">
-                <Avatar user={comment.author} />
-                <span className="text-xs text-fuchsia-100/70">
-                  {timeAgo(new Date(comment.createdAt).getTime())}
-                </span>
-              </div>
-              <p className="mt-2 text-fuchsia-100/90 whitespace-pre-wrap">
-                {comment.body}
-              </p>
-            </div>
-          ))}
-          {!(post.comments?.length ?? 0) && (
-            <p className="text-sm text-fuchsia-100/70">
-              첫 번째 댓글을 작성해 보세요.
-            </p>
-          )}
-        </div>
-        {onSubmitComment && (
-          <div className="mt-4">
-            <TextArea
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              placeholder="댓글을 입력하세요"
-            />
-            <div className="mt-2 flex items-center justify-end">
-              <Button onClick={handleSubmit} disabled={submitting}>
-                {submitting ? "작성 중..." : "댓글 작성"}
-              </Button>
-            </div>
-          </div>
-        )}
-      </section>
+      <CommentList
+        comments={post.comments}
+        postId={post.id}
+        onSubmitComment={onSubmitComment}
+        submitting={submitting}
+      />
     </article>
   );
 }
