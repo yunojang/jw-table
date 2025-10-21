@@ -1,4 +1,5 @@
 import uuid
+import random
 from fastapi import APIRouter, HTTPException, Cookie
 from app.backend.core import security
 
@@ -8,7 +9,7 @@ from ... import models
 router = APIRouter(prefix="/users", tags=["users"])
 
 
-@router.post("")
+@router.post("", response_model=models.PublicUser)
 async def create_user(db: DbDep, user: models.UserCreate):
     existing = await db["users"].find_one({"email": user.email})
     if existing:
@@ -17,6 +18,7 @@ async def create_user(db: DbDep, user: models.UserCreate):
     data = user.model_dump()
     data["hashed_password"] = security.get_password_hash(data["password"])
     data["id"] = str(uuid.uuid4())
+    data["avatarHue"] = random.randint(0, 359)
     data.pop("password")
     result = await db["users"].insert_one(data)
     data["_id"] = str(result.inserted_id)

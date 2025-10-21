@@ -42,6 +42,7 @@ async def get_current_user(
         id=user["id"],
         email=user["email"],
         nickname=user["nickname"],
+        avatarHue=user["avatarHue"],
     )
 
 

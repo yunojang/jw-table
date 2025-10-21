@@ -15,6 +15,7 @@ class UserBase(BaseModel):
 
 
 class PublicUser(UserBase):
+    avatarHue: int | None
     id: uuid.UUID
 
 

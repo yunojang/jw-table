@@ -24,6 +24,7 @@ def serialize_post(doc: dict[str, Any]) -> models.PostPublic:
     author_id = author.get("id")
     nickname = author.get("nickname")
     email = author.get("email")
+    avatarHue = author.get("avatarHue")
 
     if not author_id or not nickname:
         raise HTTPException(status_code=500, detail="Post author is malformed")
@@ -32,6 +33,7 @@ def serialize_post(doc: dict[str, Any]) -> models.PostPublic:
         "id": str(author_id),
         "email": email,
         "nickname": nickname,
+        "avatarHue": avatarHue,
     }
 
     return models.PostPublic(**data)
@@ -76,6 +78,7 @@ async def create_post(
             "id": str(user.id),
             "email": user.email,
             "nickname": user.nickname,
+            "avatarHue": user.avatarHue,
         },
     }
     await db["posts"].insert_one(document)
