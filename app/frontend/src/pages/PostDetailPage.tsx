@@ -41,22 +41,26 @@ const PostDetailPage: FC = () => {
   }, [postId]);
 
   return (
-    <Container>
-      <div className="mb-4">
-        <Button variant="flat" onClick={() => navigate(-1)}>
-          뒤로 가기
-        </Button>
-      </div>
-      {loading && (
-        <div className="text-sm text-fuchsia-100/80">게시글을 불러오는 중...</div>
-      )}
-      {error && (
-        <div className="text-sm text-red-400 font-semibold">{error}</div>
-      )}
-      {!loading && !error && post && (
-        <PostDetailView post={post} onBack={() => navigate("/posts")} />
-      )}
-    </Container>
+    <div>
+      <Container>
+        <div className="mb-4">
+          <Button variant="flat" onClick={() => navigate(-1)}>
+            뒤로 가기
+          </Button>
+        </div>
+        {loading && (
+          <div className="text-sm text-fuchsia-100/80">
+            게시글을 불러오는 중...
+          </div>
+        )}
+        {error && (
+          <div className="text-sm text-red-400 font-semibold">{error}</div>
+        )}
+        {!loading && !error && post && (
+          <PostDetailView post={post} onBack={() => navigate("/posts")} />
+        )}
+      </Container>
+    </div>
   );
 };
 

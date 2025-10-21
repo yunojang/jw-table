@@ -45,9 +45,7 @@ export async function fetchPosts(): Promise<PostPublic[]> {
 }
 
 export async function fetchPostDetail(id: ID): Promise<PostDetail> {
-  const res = await fetch(`${API_BASE}/posts/${id}`, {
-    credentials: "include",
-  });
+  const res = await fetch(`${API_BASE}/posts/${id}`);
   await ensureOk(res, "게시글을 불러오지 못했습니다.");
   return parseJSON<PostDetail>(res);
 }

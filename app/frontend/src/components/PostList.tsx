@@ -2,7 +2,6 @@ import type { ID, PostPublic } from "@/types";
 import { Input } from "./UI/Input";
 import Button from "./UI/Button";
 import { Avatar } from "./UI/Avatar";
-import { Badge } from "./UI/Badge";
 import { timeAgo } from "@/utils";
 import Pagination from "./Pagination";
 

@@ -21,14 +21,14 @@ function PostDetailView({
 }: PostDetailProps) {
   const [body, setBody] = useState("");
 
-  const sortedComments = useMemo(
-    () =>
-      [...post.comments].sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-      ),
-    [post.comments]
-  );
+  // const sortedComments = useMemo(
+  //   () =>
+  //     [...post.comments].sort(
+  //       (a, b) =>
+  //         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  //     ),
+  //   [post.comments]
+  // );
 
   const handleSubmit = async () => {
     const trimmed = body.trim();
@@ -45,7 +45,7 @@ function PostDetailView({
             {post.title}
           </h1>
           <span className="text-xs text-fuchsia-100/80 whitespace-nowrap">
-            {timeAgo(new Date(post.createdAt).getTime())}
+            {timeAgo(new Date(post.created_at).getTime())}
           </span>
         </div>
         <div className="mt-3 flex items-center gap-3">
@@ -57,10 +57,10 @@ function PostDetailView({
           </div> */}
         </div>
         <div className="mt-5 whitespace-pre-wrap leading-relaxed text-fuchsia-100/90">
-          {post.body}
+          {post.content}
         </div>
         {onBack && (
-          <div className="mt-6">
+          <div className="mt-6 flex justify-end">
             <Button variant="flat" onClick={onBack}>
               목록으로
             </Button>
@@ -69,9 +69,9 @@ function PostDetailView({
       </div>
 
       <section className="neon-card rounded-2xl p-6">
-        <h2 className="text-lg font-bold">댓글 {sortedComments.length}</h2>
+        <h2 className="text-lg font-bold">댓글 {post.comments?.length ?? 0}</h2>
         <div className="mt-4 space-y-4">
-          {sortedComments.map((comment) => (
+          {post.comments?.map((comment) => (
             <div
               key={comment.id}
               className="border-b border-pink-500/20 pb-4 last:border-none"
@@ -87,7 +87,7 @@ function PostDetailView({
               </p>
             </div>
           ))}
-          {!sortedComments.length && (
+          {!(post.comments?.length ?? 0) && (
             <p className="text-sm text-fuchsia-100/70">
               첫 번째 댓글을 작성해 보세요.
             </p>
