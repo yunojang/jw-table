@@ -62,9 +62,13 @@ class PostCreate(PostBase):
 class PostPublic(PostBase):
     id: uuid.UUID
     likes: int = 0
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=datetime.now)
     author: "PublicUser"
     excerpt: str
+
+
+class PostDetail(PostPublic):
+    comments: list["CommentPublic"]
 
 
 class PostsPublic(BaseModel):
@@ -76,3 +80,24 @@ class PostsPublic(BaseModel):
 class LoginCredentials(BaseModel):
     email: EmailStr
     password: str
+
+
+# Comments
+class CommentBase(BaseModel):
+    content: str
+
+
+class CommentCreate(CommentBase):
+    pass
+
+
+class CommentPublic(CommentBase):
+    id: uuid.UUID
+    post_id: str
+    author: "PublicUser"
+    created_at: datetime = Field(default_factory=datetime.now)
+
+
+class CommentsPublic(BaseModel):
+    data: list[CommentPublic]
+    count: int

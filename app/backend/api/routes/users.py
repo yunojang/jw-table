@@ -3,7 +3,7 @@ import random
 from fastapi import APIRouter, HTTPException, Cookie
 from app.backend.core import security
 
-from ..deps import DbDep, UserDep
+from ..deps import DbDep, CurrentUserDep
 from ... import models
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -26,5 +26,5 @@ async def create_user(db: DbDep, user: models.UserCreate):
 
 
 @router.get("/me", response_model=models.PublicUser)
-async def get_me_profile(user: UserDep):
+async def get_me_profile(user: CurrentUserDep):
     return user

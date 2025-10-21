@@ -46,4 +46,6 @@ async def get_current_user(
     )
 
 
-UserDep = Annotated[models.PublicUser, Depends(get_current_user)]
+CurrentUserDep = Annotated[models.PublicUser, Depends(get_current_user)]
+
+AuthorDep = Annotated[models.PublicUser, Depends(get_current_user)]
