@@ -33,3 +33,8 @@ export type DB = {
   comments: Record<ID, Comment>;
   order: ID[]; // post order (newest first)
 };
+
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
