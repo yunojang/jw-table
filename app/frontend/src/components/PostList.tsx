@@ -5,14 +5,26 @@ import { Avatar } from "./UI/Avatar";
 import { timeAgo } from "@/utils";
 import Pagination from "./Pagination";
 import { usePagenation } from "@/hooks/usePagenation";
+import useForm from "@/hooks/useForm";
 
+interface SearchQueryPalyoad {
+  q: string;
+}
 interface PostListProps {
   posts: PostPublic[];
   postsCount: number;
+  onSearch?(payload: SearchQueryPalyoad): void;
   onSelectPost?: (id: ID) => void;
+  defaultSearch?: Partial<SearchQueryPalyoad>;
 }
 
-function PostList({ posts, postsCount, onSelectPost }: PostListProps) {
+function PostList({
+  posts,
+  postsCount,
+  onSelectPost,
+  onSearch,
+  defaultSearch,
+}: PostListProps) {
   const handleSelect = (id: ID) => {
     if (onSelectPost) {
       onSelectPost(id);
@@ -21,17 +33,45 @@ function PostList({ posts, postsCount, onSelectPost }: PostListProps) {
 
   const { paginationProps } = usePagenation(postsCount, { defaultLimit: 12 });
 
+  const { values, handleChange, resetForm } = useForm({
+    q: defaultSearch?.q ?? "",
+  });
+
   return (
     <div className="w-full">
-      <div className="mb-4 flex gap-2 items-stretch">
-        <Input placeholder="검색: 제목 / 내용" />
-        <Button className="px-5 whitespace-nowrap" variant="primary">
-          검색
-        </Button>
-        <Button className="px-5 whitespace-nowrap" variant="flat">
-          지우기
-        </Button>
-      </div>
+      {onSearch && (
+        <form
+          className="mb-4 flex gap-2 items-stretch"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onSearch(values);
+          }}
+        >
+          <Input
+            name="q"
+            placeholder="검색: 제목 / 내용"
+            onChange={handleChange}
+            value={values.q}
+          />
+          <Button
+            className="px-5 whitespace-nowrap"
+            variant="primary"
+            type="submit"
+          >
+            검색
+          </Button>
+          <Button
+            className="px-5 whitespace-nowrap"
+            variant="flat"
+            type="button"
+            onClick={() => {
+              resetForm();
+            }}
+          >
+            지우기
+          </Button>
+        </form>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
         {posts.map((post) => (

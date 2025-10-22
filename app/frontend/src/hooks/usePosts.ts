@@ -27,11 +27,12 @@ export function usePosts({ defaultLimit }: UsePostsOptions): UsePostsResult {
   const [searchParams] = useSearchParams();
   const page = Number(searchParams.get("page"));
   const limit = Number(searchParams.get("limit") ?? defaultLimit);
+  const q = String(searchParams.get("q") ?? "");
 
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
-      const { data, count } = await fetchPosts({ page, limit });
+      const { data, count } = await fetchPosts({ page, limit, q });
 
       setPosts(data);
       setCount(count);
@@ -43,7 +44,7 @@ export function usePosts({ defaultLimit }: UsePostsOptions): UsePostsResult {
     } finally {
       setLoading(false);
     }
-  }, [page, limit]);
+  }, [page, limit, q]);
 
   useEffect(() => {
     void refresh();

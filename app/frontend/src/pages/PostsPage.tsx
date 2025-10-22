@@ -1,5 +1,5 @@
-import { type FC } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMemo, type FC } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Container from "@/layouts/Container";
 import PostList from "@/components/PostList";
 import { usePosts } from "@/hooks/usePosts";
@@ -10,6 +10,22 @@ interface PostsPageProps {}
 const PostsPage: FC<PostsPageProps> = () => {
   const navigate = useNavigate();
   const { posts, count, loading, error } = usePosts({ defaultLimit: 12 });
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const q = useMemo(() => searchParams.get("q") ?? "", [searchParams]);
+
+  const handleSearchSubmit = (q: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", "1");
+    q = q.trim();
+    if (q) {
+      params.set("q", q);
+    } else {
+      params.delete("q");
+    }
+
+    setSearchParams(params, { replace: true });
+  };
 
   return (
     <div>
@@ -34,7 +50,9 @@ const PostsPage: FC<PostsPageProps> = () => {
           <PostList
             posts={posts}
             postsCount={count}
+            onSearch={(payload) => handleSearchSubmit(payload.q)}
             onSelectPost={(id) => navigate(`/posts/${id}`)}
+            defaultSearch={q ? { q } : undefined}
           />
         )}
       </Container>

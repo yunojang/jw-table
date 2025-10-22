@@ -64,9 +64,18 @@ async def build_post_detail(
 
 
 @router.get("", response_model=models.PostsPublic)
-async def read_posts(db: DbDep, offset: int = 0, limit: int = 20):
+async def read_posts(db: DbDep, offset: int = 0, limit: int = 20, q: str = ""):
     total = await db["posts"].count_documents({})
-    cursor = db["posts"].find().sort("created_at", -1).skip(offset)
+    filter_query: dict[str, Any] = {}
+    if q:
+        filter_query = {
+            "$or": [
+                {"title": {"$regex": q, "$options": "i"}},
+                {"content": {"$regex": q, "$options": "i"}},
+            ]
+        }
+
+    cursor = db["posts"].find(filter_query).sort("created_at", -1).skip(offset)
     if limit:
         cursor = cursor.limit(limit)
     posts = await cursor.to_list(length=limit or 0)

@@ -11,6 +11,7 @@ import { API_BASE, listQuery, ensureOk, parseJSON } from "./utils";
 interface PostReadQueryParameter {
   page?: number;
   limit?: number;
+  q?: string;
 }
 
 export async function fetchPosts(
@@ -19,6 +20,7 @@ export async function fetchPosts(
   const query = listQuery({
     page: params?.page,
     limit: params?.limit,
+    q: params?.q,
     sort: "-created_at",
   });
 
