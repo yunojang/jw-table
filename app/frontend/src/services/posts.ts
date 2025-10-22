@@ -52,6 +52,7 @@ export async function createPost(payload: PostCreatePayload) {
 export async function likePost(id: ID) {
   const res = await fetch(`${API_BASE}/posts/${id}/like`, {
     method: "POST",
+    // method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
   });

@@ -39,8 +39,14 @@ const PostDetailPage: FC = () => {
 
   const handleLike = useCallback(async () => {
     if (!post) return;
-    const { liked } = await likePost(post.id);
-    setPost((prev) => (prev ? { ...prev, liked } : prev));
+
+    setPost((prev) => (prev ? { ...prev, liked: !post.liked } : prev));
+    try {
+      const { liked } = await likePost(post.id);
+      setPost((prev) => (prev ? { ...prev, liked } : prev));
+    } catch {
+      setPost(post);
+    }
   }, [post]);
 
   return (

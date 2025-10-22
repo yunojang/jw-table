@@ -125,7 +125,9 @@ async def create_post(
 async def like_post(db: DbDep, user: CurrentUserDep, post: PostDep):
     client = db.client
 
-    # await asyncio.sleep(0.5)
+    await asyncio.sleep(0.5)
+    # raise HTTPException(status_code=500, detail="error test")
+
     async with await client.start_session() as session:
         async with session.start_transaction():
             like_filter = {"post_id": post["id"], "user_id": str(user.id)}
