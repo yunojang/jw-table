@@ -4,6 +4,7 @@ import { Avatar } from "./UI/Avatar";
 import { TextArea } from "./UI/TextArea";
 import Button from "./UI/Button";
 import { timeAgo } from "@/utils";
+import PostDetailGlow from "./UI/PostDetailGlow";
 
 interface CommentListProps {
   comments?: PostComment[];
@@ -30,7 +31,10 @@ function CommentList({
   const hasComments = Boolean(comments && comments.length);
 
   return (
-    <section className="neon-card rounded-2xl p-6">
+    <section className="neon-card rounded-2xl p-6 relative overflow-hidden">
+      <PostDetailGlow />
+      <PostDetailGlow />
+
       <h2 className="text-lg font-bold">댓글 {comments?.length ?? 0}</h2>
       <div className="mt-4 space-y-4">
         {hasComments &&

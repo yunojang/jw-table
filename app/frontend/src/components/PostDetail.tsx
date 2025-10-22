@@ -4,6 +4,7 @@ import { Avatar } from "./UI/Avatar";
 import { timeAgo } from "@/utils";
 import CommentList from "./CommentList";
 import { useAuth } from "@/hooks/useAuth";
+import PostDetailGlow from "./UI/PostDetailGlow";
 
 interface PostDetailProps {
   post: PostDetail;
@@ -23,7 +24,10 @@ function PostDetailView({
   const { isAuthenticated } = useAuth();
   return (
     <article className="space-y-6">
-      <div className="neon-card rounded-2xl p-6">
+      <div className="neon-card rounded-2xl p-6 overflow-hidden relative">
+        <PostDetailGlow />
+        <PostDetailGlow />
+
         <div className="flex items-center justify-between gap-4">
           <h1 className="text-xl md:text-2xl font-extrabold tracking-tight">
             {post.title}

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Container from "@/layouts/Container";
 import PostList from "@/components/PostList";
 import { usePosts } from "@/hooks/usePosts";
+import PostsHeader from "@/components/PostsHeader";
 
 interface PostsPageProps {}
 
@@ -13,6 +14,13 @@ const PostsPage: FC<PostsPageProps> = () => {
   return (
     <div>
       <Container>
+        <div className="mb-10">
+          <PostsHeader
+            totalPosts={count}
+            onWrite={() => navigate("/posts/write")}
+          />
+        </div>
+
         {loading && (
           <div className="text-sm text-fuchsia-100/80">
             게시글을 불러오는 중...
@@ -21,6 +29,7 @@ const PostsPage: FC<PostsPageProps> = () => {
         {error && (
           <div className="text-sm text-red-400 font-semibold">{error}</div>
         )}
+
         {!loading && !error && (
           <PostList
             posts={posts}
