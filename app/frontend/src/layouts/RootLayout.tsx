@@ -91,8 +91,8 @@ function Header({ currentUser }: { currentUser: PublicUser | null }) {
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
         <Link to={"/"}>
           <div className="text-xl font-extrabold tracking-tight select-none">
-            <span className="glitch" data-text="NEON ARCADE">
-              NEON ARCADE
+            <span className="glitch" data-text="PLAY GROUND">
+              PLAY GROUND
             </span>
           </div>
         </Link>

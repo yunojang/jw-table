@@ -1,11 +1,30 @@
-import type { ID, PostCreatePayload, PostDetail, PostPublic } from "@/types";
-import { API_BASE, ensureOk, parseJSON } from "./utils";
+import type {
+  ID,
+  PostCreatePayload,
+  PostDetail,
+  PostPublic,
+  PostsPublic,
+} from "@/types";
+import { API_BASE, listQuery, ensureOk, parseJSON } from "./utils";
 
-export async function fetchPosts(): Promise<PostPublic[]> {
-  const res = await fetch(`${API_BASE}/posts`, { credentials: "include" });
+interface PostReadQueryParameter {
+  page?: number;
+  limit?: number;
+}
+
+export async function fetchPosts(
+  params?: PostReadQueryParameter
+): Promise<PostsPublic> {
+  const query = listQuery({
+    page: params?.page,
+    limit: params?.limit,
+    sort: "-created_at",
+  });
+
+  const res = await fetch(`${API_BASE}/posts?${query}`);
   await ensureOk(res, "게시글 목록을 불러오지 못했습니다.");
-  const payload = await parseJSON<{ data: PostPublic[] }>(res);
-  return payload.data ?? [];
+  const payload = await parseJSON<{ data: PostPublic[]; count: number }>(res);
+  return payload;
 }
 
 export async function fetchPostDetail(id: ID): Promise<PostDetail> {

@@ -1,5 +1,5 @@
-import { useMemo, type FC } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, type FC } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import Container from "@/layouts/Container";
 import Button from "@/components/UI/Button";
@@ -9,28 +9,30 @@ import { useAuth } from "@/hooks/useAuth";
 
 const HomePage: FC = () => {
   const navigate = useNavigate();
-  const { posts, loading, error } = usePosts();
+  const { posts, count, loading, error } = usePosts({ defaultLimit: 6 });
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const featured = useMemo(
-    () => (Array.isArray(posts) ? posts.slice(0, 6) : []),
-    [posts]
-  );
+  useEffect(() => {
+    const next = new URLSearchParams(searchParams);
+    next.set("limit", "6");
+    setSearchParams(next, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   const { isAuthenticated } = useAuth();
 
   return (
     <div className="py-12">
       <Container>
-        <section className="text-center space-y-4 py-12">
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white">
-            Neon Arcade - Table
+        <section className="text-center space-y-4 py-12 ">
+          <h1 className="text-4xl md:text-4xl font-extrabold tracking-tight text-white">
+            <span className="glitch" data-text="PLAY GROUND">
+              PLAY GROUND
+            </span>
           </h1>
-          {/* <p className="text-base text-fuchsia-100/80 max-w-3xl mx-auto">
-            애니메이션과 굿즈, 사운드를 사랑하는 팬들과 함께 최신 소식과 감상을
-            나눠보세요. 토론, 리뷰, 추천을 한 번에 즐길 수 있는 공간을
-            준비했습니다.
-          </p> */}
-          <div className="flex justify-center gap-3 mt-4 ">
+          <p className="text-base text-fuchsia-100/80 max-w-3xl mx-auto">
+            크래프톤 정글 WEEK 15 스택 연습하기
+          </p>
+          <div className="flex justify-center gap-3 mt-6">
             <Button onClick={() => navigate("/posts")}>게시판 전체보기</Button>
             {isAuthenticated && (
               <Button variant="flat" onClick={() => navigate("/posts/write")}>
@@ -57,9 +59,9 @@ const HomePage: FC = () => {
           )}
           {!loading && !error && (
             <PostList
-              posts={featured}
+              posts={posts}
+              postsCount={count}
               onSelectPost={(id) => navigate(`/posts/${id}`)}
-              pageSize={6}
             />
           )}
         </section>

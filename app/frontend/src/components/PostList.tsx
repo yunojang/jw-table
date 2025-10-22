@@ -4,41 +4,28 @@ import Button from "./UI/Button";
 import { Avatar } from "./UI/Avatar";
 import { timeAgo } from "@/utils";
 import Pagination from "./Pagination";
+import { usePagenation } from "@/hooks/usePagenation";
 
 interface PostListProps {
   posts: PostPublic[];
-  initialQuery?: string;
-  initialPage?: number;
-  pageSize?: number;
+  postsCount: number;
   onSelectPost?: (id: ID) => void;
 }
 
-function PostList({ posts, onSelectPost }: PostListProps) {
+function PostList({ posts, postsCount, onSelectPost }: PostListProps) {
   const handleSelect = (id: ID) => {
     if (onSelectPost) {
       onSelectPost(id);
     }
   };
 
+  const { paginationProps } = usePagenation(postsCount, { defaultLimit: 12 });
+
   return (
     <div className="w-full">
       <div className="mb-4 flex gap-2 items-stretch">
-        <Input
-          // value={query}
-          // onChange={(e) => {
-          //   setQuery(e.target.value);
-          //   setPage(1);
-          // }}
-          placeholder="검색: 제목 / 요약"
-        />
-        <Button
-          className="px-7 whitespace-nowrap"
-          variant="flat"
-          // onClick={() => {
-          //   setQuery("");
-          //   setPage(1);
-          // }}
-        >
+        <Input placeholder="검색: 제목 / 요약" />
+        <Button className="px-7 whitespace-nowrap" variant="flat">
           지우기
         </Button>
       </div>
@@ -84,12 +71,7 @@ function PostList({ posts, onSelectPost }: PostListProps) {
         ))}
       </div>
 
-      <Pagination
-        current={1}
-        totalPages={10}
-        onPage={() => {}}
-        className="mt-20"
-      />
+      <Pagination {...paginationProps} className="mt-20" />
     </div>
   );
 }

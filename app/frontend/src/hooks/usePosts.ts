@@ -2,48 +2,52 @@ import { useCallback, useEffect, useState } from "react";
 
 import type { PostPublic } from "@/types";
 import { fetchPosts } from "@/services/posts";
+import { useSearchParams } from "react-router-dom";
 
 const DEFAULT_ERROR = "게시글을 불러오지 못했습니다.";
 
 export interface UsePostsResult {
   posts: PostPublic[];
+  count: number;
   loading: boolean;
   error: string | null;
   refresh: () => Promise<void>;
 }
 
-export function usePosts(): UsePostsResult {
+interface UsePostsOptions {
+  defaultLimit?: number;
+}
+
+export function usePosts({ defaultLimit }: UsePostsOptions): UsePostsResult {
   const [posts, setPosts] = useState<PostPublic[]>([]);
+  const [count, setCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // const mountedRef = useRef(true);
 
-  // useEffect(() => {
-  //   return () => {
-  //     mountedRef.current = false;
-  //   };
-  // }, []);
+  const [searchParams] = useSearchParams();
+  const page = Number(searchParams.get("page"));
+  const limit = Number(searchParams.get("limit") ?? defaultLimit);
 
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await fetchPosts();
-      // if (!mountedRef.current) return;
+      const { data, count } = await fetchPosts({ page, limit });
+
       setPosts(data);
+      setCount(count);
       setError(null);
     } catch (err) {
-      // if (!mountedRef.current) return;
       setPosts([]);
+      setCount(0);
       setError(err instanceof Error ? err.message : DEFAULT_ERROR);
     } finally {
-      // if (!mountedRef.current) return;
       setLoading(false);
     }
-  }, []);
+  }, [page, limit]);
 
   useEffect(() => {
     void refresh();
   }, [refresh]);
 
-  return { posts, loading, error, refresh };
+  return { posts, count, loading, error, refresh };
 }

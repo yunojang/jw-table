@@ -8,7 +8,7 @@ interface PostsPageProps {}
 
 const PostsPage: FC<PostsPageProps> = () => {
   const navigate = useNavigate();
-  const { posts, loading, error } = usePosts();
+  const { posts, count, loading, error } = usePosts({ defaultLimit: 12 });
 
   return (
     <div>
@@ -24,6 +24,7 @@ const PostsPage: FC<PostsPageProps> = () => {
         {!loading && !error && (
           <PostList
             posts={posts}
+            postsCount={count}
             onSelectPost={(id) => navigate(`/posts/${id}`)}
           />
         )}

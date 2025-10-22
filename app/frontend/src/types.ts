@@ -21,6 +21,11 @@ export interface PostPublic extends PostBase {
   excerpt: string;
 }
 
+export interface PostsPublic {
+  data: PostPublic[];
+  count: number;
+}
+
 export interface PostCreatePayload extends PostBase {}
 
 export interface PostComment {
@@ -37,4 +42,12 @@ export interface PostDetail extends PostPublic {
 export interface LoginPayload {
   email: string;
   password: string;
+}
+
+export interface ListQuery {
+  page?: number;
+  limit?: number;
+  sort?: string;
+  q?: string;
+  [key: string]: string | number | boolean | undefined;
 }

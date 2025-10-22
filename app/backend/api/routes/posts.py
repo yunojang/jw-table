@@ -53,13 +53,14 @@ async def build_post_detail(db: DbDep, post_doc: dict[str, Any]) -> models.PostD
 
 
 @router.get("", response_model=models.PostsPublic)
-async def read_posts(db: DbDep, skip: int = 0, limit: int = 20):
-    cursor = db["posts"].find().sort("created_at", -1).skip(skip)
+async def read_posts(db: DbDep, offset: int = 0, limit: int = 20):
+    total = await db["posts"].count_documents({})
+    cursor = db["posts"].find().sort("created_at", -1).skip(offset)
     if limit:
         cursor = cursor.limit(limit)
     posts = await cursor.to_list(length=limit or 0)
     data = [serialize_post(post) for post in posts]
-    return models.PostsPublic(data=data, count=len(data))
+    return models.PostsPublic(data=data, count=total)
 
 
 @router.get("/{post_id}", response_model=models.PostDetail)

@@ -1,3 +1,5 @@
+import type { ListQuery } from "@/types";
+
 export const API_BASE =
   import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
 
@@ -34,4 +36,35 @@ export async function ensureOk(res: Response, fallbackMessage: string) {
   }
 
   throw new Error(detail || fallbackMessage);
+}
+
+const DEFAULT_PAGE = 1;
+
+export function listQuery(params: ListQuery = {}) {
+  const { page, limit, ...rest } = params;
+  const search = new URLSearchParams();
+
+  // set limit
+  if (limit !== undefined && limit !== null) {
+    search.set("limit", String(limit));
+  }
+
+  // page to offset
+  if (page !== undefined && page !== null) {
+    const pageNumber = Number(page);
+    const safePage =
+      Number.isFinite(pageNumber) && pageNumber > 0 ? pageNumber : DEFAULT_PAGE;
+    const limitNumber = Number(limit ?? 0);
+    const offset =
+      limitNumber > 0 ? (safePage - 1) * limitNumber : safePage - DEFAULT_PAGE;
+    search.set("offset", String(Math.max(0, offset)));
+  }
+
+  // set rest
+  Object.entries(rest).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+    search.set(key, String(value));
+  });
+
+  return search.toString();
 }
