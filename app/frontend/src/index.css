@@ -641,4 +641,201 @@ textarea {
   .pagination-dot.is-active .pagination-dot__glow {
     opacity: 0.7;
   }
+
+  .auth-hero__bg {
+    position: absolute;
+    inset: -15% -5%;
+    background: radial-gradient(
+        circle at 15% 20%,
+        rgba(0, 255, 255, 0.25),
+        transparent 55%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(255, 0, 155, 0.25),
+        transparent 55%
+      ),
+      radial-gradient(
+        circle at 50% 80%,
+        rgba(150, 70, 255, 0.25),
+        transparent 60%
+      );
+    filter: blur(35px);
+    animation: glowPulse 16s ease-in-out infinite alternate;
+  }
+
+  .auth-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    background: rgba(255, 0, 155, 0.12);
+    border: 1px solid rgba(255, 0, 155, 0.35);
+    color: rgba(255, 200, 255, 0.8);
+  }
+
+  .auth-hero__title {
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.2;
+    color: #fff;
+  }
+
+  .auth-hero__subtitle {
+    font-size: 0.95rem;
+    color: rgba(230, 205, 255, 0.78);
+  }
+
+  .auth-hero__toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-radius: 999px;
+    padding: 0.5rem 1.1rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #fff;
+    border: 1px solid rgba(0, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.45);
+    transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+
+  .auth-hero__toggle::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      120deg,
+      rgba(255, 0, 155, 0.45),
+      rgba(0, 255, 255, 0.45)
+    );
+    filter: blur(14px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .auth-hero__toggle:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 0, 155, 0.6);
+  }
+
+  .auth-hero__toggle:hover::after {
+    opacity: 0.6;
+  }
+
+  .auth-hero__rings {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 0, 155, 0.3);
+    filter: blur(2px);
+    animation: portalPulse 12s ease-in-out infinite alternate;
+  }
+
+  .auth-hero__icon {
+    position: absolute;
+    font-size: 2.6rem;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 0 20px rgba(255, 0, 155, 0.5);
+    animation: orbitPen 14s linear infinite;
+  }
+
+  .auth-hero__keywords {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+
+  .auth-hero__keyword {
+    position: absolute;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #fff;
+    text-transform: uppercase;
+    background: linear-gradient(
+      120deg,
+      rgba(255, 0, 155, 0.65),
+      rgba(0, 255, 255, 0.65)
+    );
+    box-shadow: 0 0 18px rgba(255, 0, 155, 0.3);
+    animation: keywordFloat 5s ease-in-out infinite;
+    animation-fill-mode: both;
+    will-change: transform, opacity;
+  }
+
+  .auth-hero__keyword:nth-child(1) {
+    top: 10%;
+    left: 18%;
+  }
+  .auth-hero__keyword:nth-child(2) {
+    top: 22%;
+    right: 14%;
+  }
+  .auth-hero__keyword:nth-child(3) {
+    bottom: 20%;
+    left: 12%;
+  }
+  .auth-hero__keyword:nth-child(4) {
+    bottom: 12%;
+    right: 18%;
+  }
+
+  .auth-panel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.75rem;
+    border: 1px solid rgba(255, 0, 155, 0.25);
+    background: rgba(0, 0, 0, 0.65);
+    padding: 2.5rem;
+    box-shadow: 0 0 45px rgba(255, 0, 155, 0.18);
+  }
+
+  .auth-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at 30% 20%,
+      rgba(255, 0, 155, 0.25),
+      transparent 60%
+    );
+    opacity: 0.6;
+    filter: blur(40px);
+    pointer-events: none;
+  }
+
+  .auth-panel__header {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    color: #fff;
+  }
+
+  .auth-panel__title {
+    font-size: 1.6rem;
+    font-weight: 800;
+  }
+
+  .auth-panel__subtitle {
+    font-size: 0.9rem;
+    color: rgba(230, 205, 255, 0.78);
+  }
+
+  .auth-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+  }
 }

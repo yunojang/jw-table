@@ -70,13 +70,21 @@ function HeroBanner({
           <Button onClick={onPrimary} className="px-8 py-3 text-base">
             게시판 둘러보기
           </Button>
-          {isAuthenticated && (
+          {isAuthenticated ? (
             <Button
               variant="flat"
               onClick={onSecondary}
               className="border border-pink-400/40 px-8 py-3 text-base text-white hover:bg-white/10"
             >
               지금 글쓰기
+            </Button>
+          ) : (
+            <Button
+              variant="flat"
+              onClick={onSecondary}
+              className="border border-pink-400/40 px-8 py-3 text-base text-white hover:bg-white/10"
+            >
+              로그인하고 글쓰기
             </Button>
           )}
         </div>

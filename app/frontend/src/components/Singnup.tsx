@@ -1,3 +1,4 @@
+import type { FormEvent } from "react";
 import Button from "./UI/Button";
 import { Input } from "./UI/Input";
 import type { SignupPayload } from "@/services/auth";
@@ -16,7 +17,8 @@ function Signup({
     nickname: "",
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     onSignup({
       email: values.email.trim(),
       password: values.password.trim(),
@@ -25,35 +27,55 @@ function Signup({
   };
 
   return (
-    <div className="max-w-md neon-card rounded-2xl p-6">
-      <h1 className="text-xl font-extrabold">회원가입</h1>
-      <div className="mt-4 space-y-3">
-        <Input
-          name="email"
-          value={values.email}
-          onChange={handleChange}
-          placeholder="이메일"
-        />
-        <Input
-          type="password"
-          name="password"
-          value={values.password}
-          onChange={handleChange}
-          placeholder="패스워드"
-        />
-        <Input
-          name="nickname"
-          value={values.nickname}
-          onChange={handleChange}
-          placeholder="닉네임"
-        />
+    <form className="auth-panel max-w-md" onSubmit={handleSubmit}>
+      <header className="auth-panel__header">
+        <span className="text-xs uppercase tracking-[0.35em] text-pink-200/80">
+          Signup
+        </span>
+        <h2 className="auth-panel__title">정글의 새로운 동료가 되세요</h2>
+        <p className="auth-panel__subtitle">
+          같은 목표를 향해 달릴 크루와 연결되고 싶다면, 지금 바로 계정을 만들어
+          보세요.
+        </p>
+      </header>
+
+      <div className="space-y-4">
+        <div className="sparkle-field p-0.5 rounded-2xl">
+          <Input
+            name="email"
+            value={values.email}
+            onChange={handleChange}
+            placeholder="이메일"
+            autoComplete="email"
+          />
+        </div>
+        <div className="sparkle-field p-0.5 rounded-2xl">
+          <Input
+            type="password"
+            name="password"
+            value={values.password}
+            onChange={handleChange}
+            placeholder="패스워드"
+            autoComplete="new-password"
+          />
+        </div>
+        <div className="sparkle-field p-0.5 rounded-2xl">
+          <Input
+            name="nickname"
+            value={values.nickname}
+            onChange={handleChange}
+            placeholder="닉네임"
+            autoComplete="nickname"
+          />
+        </div>
       </div>
-      <div className="mt-4 flex items-center justify-end">
-        <Button onClick={handleSubmit}>
-          {loading ? "Loading..." : "가입하기"}
+
+      <div className="auth-actions mt-6">
+        <Button type="submit" disabled={loading}>
+          {loading ? "가입 중..." : "가입하기"}
         </Button>
       </div>
-    </div>
+    </form>
   );
 }
 
