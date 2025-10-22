@@ -318,7 +318,7 @@ textarea {
     left: 50%;
     width: 320px;
     height: 320px;
-    transform: translate(-50%, -50%);
+    transform: translate3d(-50%, -50%, 0);
     background: radial-gradient(
       circle,
       rgba(255, 0, 155, 0.2),
@@ -326,6 +326,8 @@ textarea {
     );
     filter: blur(30px);
     animation: portalPulse 8s ease-in-out infinite alternate;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
   }
 
   .write-portal-ring {
@@ -335,11 +337,13 @@ textarea {
     width: 260px;
     height: 260px;
     border-radius: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate3d(-50%, -50%, 0);
     border: 1px solid rgba(255, 0, 155, 0.3);
     box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
     filter: blur(2px);
     animation: portalPulse 10s ease-in-out infinite alternate-reverse;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
   }
 
   .write-orb {
@@ -355,6 +359,7 @@ textarea {
     );
     filter: blur(10px);
     animation: neonBlink 7s ease-in-out infinite;
+    will-change: opacity;
   }
 
   .write-pen {
@@ -364,8 +369,10 @@ textarea {
     text-shadow: 0 0 20px rgba(255, 0, 155, 0.4);
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate3d(-50%, -50%, 0);
     animation: orbitPen 12s linear infinite;
+    will-change: transform;
+    backface-visibility: hidden;
   }
 
   .rotating-keywords {
@@ -388,6 +395,9 @@ textarea {
     );
     box-shadow: 0 0 18px rgba(255, 0, 155, 0.35);
     animation: keywordFloat 4.5s ease-in-out infinite;
+    animation-fill-mode: both;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
   }
 
   .rotating-keyword:nth-child(1) {

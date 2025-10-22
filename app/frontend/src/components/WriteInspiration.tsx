@@ -25,7 +25,7 @@ function WriteInspiration({ onWrite }: { onWrite?: () => void }) {
             채우도록.
           </h1>
           <p className="text-sm text-fuchsia-100/80 md:text-base">
-            정글에서 익힌 실험과 실패, 크루들의 피드백까지. 이곳에 모인 경험은
+            정글에서 익힌 실험과 실패, 정글러들의 피드백까지. 이곳에 모인 경험은
             보다 강력한 프로젝트 이야기로 진화합니다.
           </p>
           {onWrite && (
