@@ -65,7 +65,6 @@ async def build_post_detail(
 
 @router.get("", response_model=models.PostsPublic)
 async def read_posts(db: DbDep, offset: int = 0, limit: int = 20, q: str = ""):
-    total = await db["posts"].count_documents({})
     filter_query: dict[str, Any] = {}
     sort_stage = [("created_at", -1)]
 
@@ -79,6 +78,7 @@ async def read_posts(db: DbDep, offset: int = 0, limit: int = 20, q: str = ""):
         }
         sort_stage = [("score", {"$meta": "textScore"}), ("created_at", -1)]
 
+    total = await db["posts"].count_documents(filter_query)
     cursor = db["posts"].find(filter_query).sort(sort_stage).skip(offset)
     if limit:
         cursor = cursor.limit(limit)
