@@ -1,9 +1,14 @@
+import json
 import uuid
 import asyncio
 from datetime import datetime
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
+from app.backend.config.redis import redis_client
+
+CACHE_PREFIX = "post:detail:"
+
 
 from ... import models
 from ..deps import DbDep, CurrentUserDep, PostDep, OptionalUserDep
@@ -89,7 +94,14 @@ async def read_posts(db: DbDep, offset: int = 0, limit: int = 20, q: str = ""):
 
 @router.get("/{post_id}", response_model=models.PostDetail)
 async def read_post(db: DbDep, post: PostDep, user: OptionalUserDep):
-    return await build_post_detail(db, post, user)
+    cache_key = f"{CACHE_PREFIX}{post['id']}"
+    cached = await redis_client.get(cache_key)
+    if cached:
+        return models.PostDetail(**json.loads(cached))
+
+    result = await build_post_detail(db, post, user)
+    await redis_client.set(cache_key, result.model_dump_json(), ex=300)
+    return result
 
 
 @router.post("", response_model=models.PostPublic)
@@ -155,6 +167,8 @@ async def like_post(db: DbDep, user: CurrentUserDep, post: PostDep):
                 liked = True
 
     updated_post = await db["posts"].find_one({"id": post["id"]})
+    await redis_client.delete(f"{CACHE_PREFIX}{post['id']}")
+
     if not updated_post:
         raise HTTPException(status_code=500, detail="Failed to fetch updated post")
 
@@ -177,6 +191,7 @@ async def read_comments(db: DbDep, post: PostDep):
 async def create_comment(
     db: DbDep, user: CurrentUserDep, post: PostDep, payload: models.CommentCreate
 ):
+
     data = payload.model_dump()
     now = datetime.now()
     comment_id = str(uuid.uuid4())
@@ -187,5 +202,7 @@ async def create_comment(
         "author": user.model_dump(mode="json"),
         "created_at": now,
     }
+
     await db["comments"].insert_one(document)
+    await redis_client.delete(f"{CACHE_PREFIX}{post['id']}")
     return to_comment_public(document)
