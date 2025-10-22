@@ -67,15 +67,19 @@ async def build_post_detail(
 async def read_posts(db: DbDep, offset: int = 0, limit: int = 20, q: str = ""):
     total = await db["posts"].count_documents({})
     filter_query: dict[str, Any] = {}
+    sort_stage = [("created_at", -1)]
+
     if q:
         filter_query = {
-            "$or": [
-                {"title": {"$regex": q, "$options": "i"}},
-                {"content": {"$regex": q, "$options": "i"}},
-            ]
+            # "$or": [
+            #     {"title": {"$regex": q, "$options": "i"}},
+            #     {"content": {"$regex": q, "$options": "i"}},
+            # ]
+            "$text": {"$search": q}
         }
+        sort_stage = [("score", {"$meta": "textScore"}), ("created_at", -1)]
 
-    cursor = db["posts"].find(filter_query).sort("created_at", -1).skip(offset)
+    cursor = db["posts"].find(filter_query).sort(sort_stage).skip(offset)
     if limit:
         cursor = cursor.limit(limit)
     posts = await cursor.to_list(length=limit or 0)
