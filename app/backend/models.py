@@ -69,6 +69,7 @@ class PostPublic(PostBase):
 
 class PostDetail(PostPublic):
     comments: list["CommentPublic"]
+    liked: bool
 
 
 class PostsPublic(BaseModel):
@@ -101,3 +102,8 @@ class CommentPublic(CommentBase):
 class CommentsPublic(BaseModel):
     data: list[CommentPublic]
     count: int
+
+
+class LikeToggleResult(BaseModel):
+    likes: int
+    liked: bool

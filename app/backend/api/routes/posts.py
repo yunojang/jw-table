@@ -5,7 +5,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 
 from ... import models
-from ..deps import DbDep, CurrentUserDep
+from ..deps import DbDep, CurrentUserDep, PostDep, OptionalUserDep
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -44,12 +44,22 @@ def to_comment_public(doc: dict) -> models.CommentPublic:
     return models.CommentPublic(**{**doc, "author": author})
 
 
-async def build_post_detail(db: DbDep, post_doc: dict[str, Any]) -> models.PostDetail:
+async def build_post_detail(
+    db: DbDep, post_doc: dict[str, Any], user: CurrentUserDep | None
+) -> models.PostDetail:
     base = serialize_post(post_doc)
     cursor = db["comments"].find({"post_id": str(base.id)}).sort("created_at", 1)
     comments_docs = await cursor.to_list()
+
+    liked = False
+    if user:
+        record = await db["post_likes"].find_one(
+            {"post_id": post_doc["id"], "user_id": str(user.id)}
+        )
+        liked = record is not None
+
     parsed = [to_comment_public(c) for c in comments_docs]
-    return models.PostDetail(**base.model_dump(), comments=parsed)
+    return models.PostDetail(**base.model_dump(), comments=parsed, liked=liked)
 
 
 @router.get("", response_model=models.PostsPublic)
@@ -64,11 +74,8 @@ async def read_posts(db: DbDep, offset: int = 0, limit: int = 20):
 
 
 @router.get("/{post_id}", response_model=models.PostDetail)
-async def read_post(db: DbDep, post_id: str):
-    post = await db["posts"].find_one({"id": post_id})
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found")
-    return await build_post_detail(db, post)
+async def read_post(db: DbDep, post: PostDep, user: OptionalUserDep):
+    return await build_post_detail(db, post, user)
 
 
 @router.post("", response_model=models.PostPublic)
@@ -99,13 +106,50 @@ async def create_post(
     return serialize_post(document)
 
 
-@router.get("/{post_id}/comments", response_model=models.CommentsPublic)
-async def get_comments(db: DbDep, post_id: str):
-    post = await db["posts"].find_one({"id": post_id})
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found")
+# Likes
+@router.post("/{post_id}/like", response_model=models.LikeToggleResult)
+async def like_post(db: DbDep, user: CurrentUserDep, post: PostDep):
+    client = db.client
+    async with await client.start_session() as session:
+        async with session.start_transaction():
+            like_filter = {"post_id": post["id"], "user_id": str(user.id)}
 
-    cursor = db["comments"].find({"post_id": post_id}).sort("created_at", 1)
+            existing = await db["post_likes"].find_one(like_filter, session=session)
+            if existing:
+                await db["post_likes"].delete_one(like_filter, session=session)
+                await db["posts"].update_one(
+                    {"id": post["id"]},
+                    {"$inc": {"likes": -1}},
+                    session=session,
+                )
+                liked = False
+            else:
+                doc = {
+                    **like_filter,
+                    "created_at": datetime.now(),
+                }
+                await db["post_likes"].insert_one(doc, session=session)
+                await db["posts"].update_one(
+                    {"id": post["id"]},
+                    {"$inc": {"likes": 1}},
+                    session=session,
+                )
+                liked = True
+
+    updated_post = await db["posts"].find_one({"id": post["id"]})
+    if not updated_post:
+        raise HTTPException(status_code=500, detail="Failed to fetch updated post")
+
+    return models.LikeToggleResult(
+        liked=liked,
+        likes=updated_post["likes"],
+    )
+
+
+# Comments api
+@router.get("/{post_id}/comments", response_model=models.CommentsPublic)
+async def read_comments(db: DbDep, post: PostDep):
+    cursor = db["comments"].find({"post_id": post["id"]}).sort("created_at", 1)
     documents = await cursor.to_list(length=0)
     comments = [to_comment_public(doc) for doc in documents]
 
@@ -114,19 +158,15 @@ async def get_comments(db: DbDep, post_id: str):
 
 @router.post("/{post_id}/comments", response_model=models.CommentPublic)
 async def create_comment(
-    db: DbDep, user: CurrentUserDep, post_id: str, payload: models.CommentCreate
+    db: DbDep, user: CurrentUserDep, post: PostDep, payload: models.CommentCreate
 ):
-    post = await db["posts"].find_one({"id": post_id})
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found")
-
     data = payload.model_dump()
     now = datetime.now()
     comment_id = str(uuid.uuid4())
     document = {
         **data,
         "id": comment_id,
-        "post_id": post_id,
+        "post_id": post["id"],
         "author": user.model_dump(mode="json"),
         "created_at": now,
     }

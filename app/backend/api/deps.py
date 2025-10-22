@@ -25,6 +25,19 @@ async def get_token_from_cookie(request: Request) -> str:
 TokenDep = Annotated[str, Depends(get_token_from_cookie)]
 
 
+async def get_current_user_optional(
+    request: Request,
+    db: DbDep,
+) -> models.PublicUser | None:
+    token = request.cookies.get("access_token")
+    if not token:
+        return None
+    try:
+        return await get_current_user(db, token)
+    except HTTPException:
+        return None
+
+
 async def get_current_user(
     db: DbDep,
     token: TokenDep,
@@ -46,6 +59,22 @@ async def get_current_user(
     )
 
 
-CurrentUserDep = Annotated[models.PublicUser, Depends(get_current_user)]
+# deps.py
+async def get_post_or_404(
+    post_id: str,  # 라우트의 {post_id}와 이름이 같다
+    db: DbDep,
+) -> dict:
+    post = await db["posts"].find_one({"id": post_id})
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return post
 
-AuthorDep = Annotated[models.PublicUser, Depends(get_current_user)]
+
+PostDep = Annotated[dict, Depends(get_post_or_404)]
+
+
+CurrentUserDep = Annotated[models.PublicUser, Depends(get_current_user)]
+OptionalUserDep = Annotated[
+    models.PublicUser | None,
+    Depends(get_current_user_optional),
+]
