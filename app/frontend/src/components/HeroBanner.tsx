@@ -57,7 +57,7 @@ function HeroBanner({
           • Anime × Manga × 1조
         </p>
         <h1 className="mt-5 text-3xl font-black leading-tight text-white sm:text-4xl md:text-5xl">
-          15주차 풀스택 학습
+          WEEK15 풀스택 프로젝트
           <span className="mx-2 inline-block bg-gradient-to-r from-pink-400 via-purple-300 to-cyan-300 bg-clip-text text-transparent">
             정글 커뮤니티
           </span>
