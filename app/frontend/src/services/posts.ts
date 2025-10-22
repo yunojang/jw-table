@@ -1,5 +1,6 @@
 import type {
   ID,
+  LikeResult,
   PostCreatePayload,
   PostDetail,
   PostPublic,
@@ -28,7 +29,9 @@ export async function fetchPosts(
 }
 
 export async function fetchPostDetail(id: ID): Promise<PostDetail> {
-  const res = await fetch(`${API_BASE}/posts/${id}`);
+  const res = await fetch(`${API_BASE}/posts/${id}`, {
+    credentials: "include",
+  });
   await ensureOk(res, "게시글을 불러오지 못했습니다.");
   return parseJSON<PostDetail>(res);
 }
@@ -42,4 +45,14 @@ export async function createPost(payload: PostCreatePayload) {
   });
   await ensureOk(res, "게시글을 작성하지 못했습니다.");
   return parseJSON<PostDetail>(res);
+}
+
+export async function likePost(id: ID) {
+  const res = await fetch(`${API_BASE}/posts/${id}/like`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+  });
+  await ensureOk(res, "좋아요 실패");
+  return parseJSON<LikeResult>(res);
 }

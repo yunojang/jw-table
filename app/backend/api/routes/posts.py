@@ -1,5 +1,6 @@
-from datetime import datetime
 import uuid
+import asyncio
+from datetime import datetime
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
@@ -110,6 +111,8 @@ async def create_post(
 @router.post("/{post_id}/like", response_model=models.LikeToggleResult)
 async def like_post(db: DbDep, user: CurrentUserDep, post: PostDep):
     client = db.client
+
+    # await asyncio.sleep(0.5)
     async with await client.start_session() as session:
         async with session.start_transaction():
             like_filter = {"post_id": post["id"], "user_id": str(user.id)}

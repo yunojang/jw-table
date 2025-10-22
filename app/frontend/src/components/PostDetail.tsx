@@ -3,10 +3,12 @@ import Button from "./UI/Button";
 import { Avatar } from "./UI/Avatar";
 import { timeAgo } from "@/utils";
 import CommentList from "./CommentList";
+import { useAuth } from "@/hooks/useAuth";
 
 interface PostDetailProps {
   post: PostDetail;
   onBack?: () => void;
+  onLike?: () => void;
   onSubmitComment?: (postId: ID, body: string) => Promise<void> | void;
   submitting?: boolean;
 }
@@ -14,9 +16,11 @@ interface PostDetailProps {
 function PostDetailView({
   post,
   onBack,
+  onLike,
   onSubmitComment,
   submitting = false,
 }: PostDetailProps) {
+  const { isAuthenticated } = useAuth();
   return (
     <article className="space-y-6">
       <div className="neon-card rounded-2xl p-6">
@@ -39,13 +43,18 @@ function PostDetailView({
         <div className="mt-5 whitespace-pre-wrap leading-relaxed text-fuchsia-100/90">
           {post.content}
         </div>
-        {onBack && (
-          <div className="mt-6 flex justify-end">
+        <div className="mt-6 flex justify-end gap-3">
+          {onLike && isAuthenticated && (
+            <Button variant={post.liked ? "primary" : "flat"} onClick={onLike}>
+              좋아요
+            </Button>
+          )}
+          {onBack && (
             <Button variant="flat" onClick={onBack}>
               목록으로
             </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <CommentList

@@ -1,10 +1,10 @@
-import { useEffect, useState, type FC } from "react";
+import { useCallback, useEffect, useState, type FC } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Container from "@/layouts/Container";
 import PostDetailView from "@/components/PostDetail";
 import type { ID, PostDetail } from "@/types";
-import { fetchPostDetail } from "@/services/posts";
+import { fetchPostDetail, likePost } from "@/services/posts";
 import Button from "@/components/UI/Button";
 import { createComment } from "@/services/comment";
 
@@ -37,6 +37,12 @@ const PostDetailPage: FC = () => {
     load();
   }, [postId]);
 
+  const handleLike = useCallback(async () => {
+    if (!post) return;
+    const { liked } = await likePost(post.id);
+    setPost((prev) => (prev ? { ...prev, liked } : prev));
+  }, [post]);
+
   return (
     <div>
       <Container>
@@ -57,6 +63,7 @@ const PostDetailPage: FC = () => {
           <PostDetailView
             post={post}
             onBack={() => navigate("/posts")}
+            onLike={handleLike}
             onSubmitComment={async (pid: ID, content: string) => {
               await createComment(pid, content);
               const updated = await fetchPostDetail(pid);

@@ -24,7 +24,7 @@ function PostList({ posts, postsCount, onSelectPost }: PostListProps) {
   return (
     <div className="w-full">
       <div className="mb-4 flex gap-2 items-stretch">
-        <Input placeholder="검색: 제목 / 요약" />
+        <Input placeholder="검색: 제목 / 내용" />
         <Button className="px-7 whitespace-nowrap" variant="flat">
           지우기
         </Button>
