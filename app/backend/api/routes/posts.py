@@ -141,8 +141,7 @@ async def like_post(db: DbDep, user: CurrentUserDep, post: PostDep):
         raise HTTPException(status_code=500, detail="Failed to fetch updated post")
 
     return models.LikeToggleResult(
-        liked=liked,
-        likes=updated_post["likes"],
+        liked=liked, likes=updated_post["likes"], updated=updated_post
     )
 
 

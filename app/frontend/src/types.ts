@@ -37,6 +37,13 @@ export interface PostComment {
 
 export interface PostDetail extends PostPublic {
   comments: PostComment[];
+  liked: boolean;
+}
+
+export interface LikeResult {
+  likes: number;
+  liked: boolean;
+  updated: PostPublic;
 }
 
 export interface LoginPayload {

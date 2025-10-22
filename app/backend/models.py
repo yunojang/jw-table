@@ -107,3 +107,4 @@ class CommentsPublic(BaseModel):
 class LikeToggleResult(BaseModel):
     likes: int
     liked: bool
+    updated: "PostPublic"
